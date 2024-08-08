@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "No YouTube",
+    "version": "1.0",
+
+    "description": "Блокирует ютуб с целью переключения внимания на более важные вещи.",
+
+    "icons": {
+        "48": "icons/icon-48.png"
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["*://*.youtube.com/*"],
+            "js": ["main.js"]
+        }
+    ]
+}
