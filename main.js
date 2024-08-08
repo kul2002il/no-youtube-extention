@@ -1,3 +1,6 @@
+function div(val, by){
+    return (val - val % by) / by;
+}
 
 class Timer {
     constructor(seconds, element) {
@@ -30,45 +33,6 @@ class Timer {
     }
 }
 
-function div(val, by){
-    return (val - val % by) / by;
-}
-
-
-
-
-
-customElements.define('show-banner', class extends HTMLElement {
-    connectedCallback() {
-        const shadow = this.attachShadow({mode: 'open'});
-        shadow.innerHTML = `
-<style>
-    #body {
-        font-size: 2rem;
-        padding: 30px;
-    }
-    #body > * {
-        margin-bottom: 20px;
-    }
-</style>
-<div id="body">
-    <h2>Стой, подумай!</h2>
-    <p>Подожди немного, почитай книгу, отвлекись на чайочичек. Сделай что-нибудь в общем.</p>
-    <p>Либо просто подожди несколько минут.</p>
-    <p id="timer"></p>
-</div>`;
-        let timer = new Timer(10 * 60, shadow.getElementById('timer'));
-        timer.callback = () => {
-            document.querySelector('ytd-app').style.display = null;
-            this.remove();
-        };
-    }
-});
-
-
-
-
-
 function ban() {
     if (document.querySelector('show-banner') ) {
         return;
@@ -77,13 +41,24 @@ function ban() {
     document.querySelector('ytd-app').style.display = 'none';
     // TODO: Stop video.
 
-    document.body.appendChild(
-        document.createElement('show-banner')
-    );
+    let bannerElement = document.createElement('div');
+    bannerElement.style.padding = '30px';
+    bannerElement.style.fontSize = '2rem';
+    bannerElement.innerHTML = `
+        <h2 style="margin-bottom: 20px">Стой, подумай!</h2>
+        <p style="margin-bottom: 20px">Подожди немного, почитай книгу, отвлекись на чайочичек. Сделай что-нибудь в общем.</p>
+        <p style="margin-bottom: 20px">Либо просто подожди несколько минут.</p>
+        <p id="no-youtube-timer"></p>
+    `;
+
+    document.body.appendChild(bannerElement);
+
+    let timer = new Timer(10 * 60, document.getElementById('no-youtube-timer'));
+    timer.callback = () => {
+        document.querySelector('ytd-app').style.display = null;
+        bannerElement.remove();
+    };
 }
-
-
-
 
 
 let oldLocation = null;
@@ -94,6 +69,3 @@ setInterval(() => {
         ban();
     }
 }, 200);
-
-
-
